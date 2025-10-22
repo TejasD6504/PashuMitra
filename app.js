@@ -20,6 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/qrcodes', express.static(path.join(__dirname, 'qrcodes')));
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Multer storage
 const storage = multer.diskStorage({
