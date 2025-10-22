@@ -9,3 +9,8 @@
     "qrcode": "^1.5.4"
   }
 }
+
+"scripts": {
+    "start": "node app.js"
+  }
+
