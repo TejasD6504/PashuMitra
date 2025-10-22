@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Animal Rescue AR</title>
+
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #loading {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.6);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="loading">📍 Initializing AR... Please allow location access</div>
+
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+      id="scene"
+    >
+      <!-- Always visible test box -->
+      <a-box position="0 0 -5" color="blue" depth="1" height="1" width="1"></a-box>
+
+      <a-camera gps-camera rotation-reader></a-camera>
+    </a-scene>
+
+    <script>
+      const animals = [
+        {
+          animal_name: "Dog",
+          animal_condition: "injured",
+          latitude: 19.98848,     // YOUR CURRENT LATITUDE
+          longitude: 73.7640448   // YOUR CURRENT LONGITUDE
+        },
+        {
+          animal_name: "Cat",
+          animal_condition: "healthy",
+          latitude: 19.98860,
+          longitude: 73.76410
+        }
+      ];
+
+      const scene = document.getElementById("scene");
+      const loading = document.getElementById("loading");
+      const camera = document.querySelector("[gps-camera]");
+
+      // Helper: Calculate distance in meters
+      function distance(lat1, lon1, lat2, lon2) {
+        const R = 6371e3;
+        const φ1 = lat1 * Math.PI/180;
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2-lat1)*Math.PI/180;
+        const Δλ = (lon2-lon1)*Math.PI/180;
+        const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      }
+
+      function createMarker(animal) {
+        const marker = document.createElement("a-entity");
+        marker.setAttribute("gps-entity-place", `latitude: ${animal.latitude}; longitude: ${animal.longitude}`);
+
+        const box = document.createElement("a-box");
+        box.setAttribute("color", animal.animal_condition === "injured" ? "red" : "green");
+        box.setAttribute("depth", 2);
+        box.setAttribute("height", 2);
+        box.setAttribute("width", 2);
+        marker.appendChild(box);
+
+        const label = document.createElement("a-text");
+        label.setAttribute("value", `${animal.animal_name} (${animal.animal_condition})`);
+        label.setAttribute("align", "center");
+        label.setAttribute("position", "0 2.5 0");
+        label.setAttribute("scale", "2 2 2");
+        label.setAttribute("look-at", "[gps-camera]");
+        marker.appendChild(label);
+
+        scene.appendChild(marker);
+      }
+
+      camera.addEventListener("gps-camera-update-position", (event) => {
+        const userLat = event.detail.position.latitude;
+        const userLng = event.detail.position.longitude;
+        console.log("GPS ready:", userLat, userLng);
+
+        animals.forEach(animal => {
+          const d = distance(userLat, userLng, animal.latitude, animal.longitude);
+          if (d <= 100) { // show marker if within 100 meters
+            createMarker(animal);
+            console.log(`Added marker for ${animal.animal_name}, distance: ${d.toFixed(1)}m`);
+          } else {
+            console.log(`${animal.animal_name} is too far: ${d.toFixed(1)}m`);
+          }
+        });
+
+        loading.textContent = "✅ AR Markers Loaded!";
+        setTimeout(() => loading.style.display = "none", 2000);
+      });
+    </script>
+  </body>
+</html>

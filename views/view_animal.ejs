@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Registration & QR Code | Animal Rescue Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 25% 35%, rgba(255, 149, 0, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 75% 65%, rgba(255, 90, 90, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 90, 90, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 149, 0, 0.2);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            color: #ff9500;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 149, 0, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .header-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #ff9500, #ff5a5a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 1.1em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #ff9500;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #fff;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(255, 149, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: #666;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff9500' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* File Upload */
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 149, 0, 0.1);
+            border: 2px dashed rgba(255, 149, 0, 0.4);
+            border-radius: 12px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .file-upload-label:hover {
+            background: rgba(255, 149, 0, 0.15);
+            border-color: rgba(255, 149, 0, 0.6);
+        }
+
+        .file-upload-icon {
+            font-size: 40px;
+        }
+
+        .file-upload-text {
+            color: #ccc;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #ff9500;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff9500, #ff7300);
+            color: #fff;
+            padding: 16px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 149, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 149, 0, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* QR Result Section */
+        .qr-result {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .qr-result.show {
+            display: block;
+        }
+
+        .qr-result h3 {
+            color: #ff9500;
+            font-size: 2em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .qr-result img {
+            max-width: 300px;
+            width: 100%;
+            border-radius: 15px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(255, 149, 0, 0.2);
+        }
+
+        .qr-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-action-btn {
+            background: rgba(255, 149, 0, 0.2);
+            border: 1px solid rgba(255, 149, 0, 0.4);
+            color: #ff9500;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-action-btn:hover {
+            background: rgba(255, 149, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff5a5a;
+            background: rgba(255, 90, 90, 0.1);
+            border: 1px solid rgba(255, 90, 90, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 149, 0, 0.2);
+            border-top: 4px solid #ff9500;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .back-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+
+            .qr-result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="#" class="back-btn" onclick="alert('Returning to main page...'); return false;">← Back to Home</a>
+        <div class="header-icon">🏷️</div>
+        <h1>Animal Registration & QR Code</h1>
+        <p>Register animals and generate QR codes for easy tracking</p>
+    </div>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <form id="animalForm" action="/animal_info" enctype="multipart/form-data" method="post">
+                <div class="form-group">
+                    <label for="name">🐾 Animal Name</label>
+                    <input type="text" id="name" name="animalname" placeholder="Enter animal name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="condition">💊 Health Condition</label>
+                    <select id="condition" name="condition" required>
+                        <option value="">Select Condition</option>
+                        <option value="Healthy">✅ Healthy</option>
+                        <option value="Injured">🩹 Injured</option>
+                        <option value="Recovering">💚 Recovering</option>
+                        <option value="Vaccinated">💉 Vaccinated</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">📋 Description / Medical Record</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Enter medical history, treatment details, special care instructions, etc." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo">📸 Upload Photo</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="photo" name="photo" accept="image/*" onchange="updateFileName(this)">
+                        <label for="photo" class="file-upload-label">
+                            <div>
+                                <div class="file-upload-icon">📁</div>
+                                <div class="file-upload-text">
+                                    <strong>Click to upload</strong> or drag and drop<br>
+                                    <small>PNG, JPG up to 10MB</small>
+                                </div>
+                            </div>
+                        </label>
+                        <div id="fileName" class="file-name"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>🔖</span> Generate QR Code
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generating QR Code...</p>
+            </div>
+        </div>
+
+        <!-- QR Result Section -->
+        <div class="qr-result" id="qrResult">
+            <!-- QR code will be displayed here -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🐾 Animal Rescue Hub • Making a difference one animal at a time 🐾</p>
+    </div>
+
+    <script>
+        const form = document.getElementById('animalForm');
+        const qrResult = document.getElementById('qrResult');
+        const loading = document.getElementById('loading');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function updateFileName(input) {
+            const fileName = document.getElementById('fileName');
+            if (input.files.length > 0) {
+                fileName.textContent = '✓ ' + input.files[0].name;
+            } else {
+                fileName.textContent = '';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Show loading
+            loading.classList.add('show');
+            submitBtn.disabled = true;
+            qrResult.classList.remove('show');
+
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch('/animal_info', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                // Hide loading
+                loading.classList.remove('show');
+                submitBtn.disabled = false;
+
+                if (data.qrUrl) {
+                    qrResult.innerHTML = `
+                        <h3><span>✅</span> QR Code Generated Successfully!</h3>
+                        <img src="${data.qrUrl}" alt="QR Code">
+                        <div class="qr-actions">
+                            <button class="qr-action-btn" onclick="downloadQR('${data.qrUrl}')">
+                                <span>⬇️</span> Download QR Code
+                            </button>
+                            <button class="qr-action-btn" onclick="printQR()">
+                                <span>🖨️</span> Print QR Code
+                            </button>
+                            <button class="qr-action-btn" onclick="resetForm()">
+                                <span>➕</span> Register Another
+                            </button>
+                        </div>
+                        <p class="success-message">Animal registered successfully! Use this QR code for tracking.</p>
+                    `;
+                    qrResult.classList.add('show');
+                    form.reset();
+                    document.getElementById('fileName').textContent = '';
+                } else {
+                    qrResult.innerHTML = `
+                        <p class="error-message">❌ Error generating QR code. Please try again.</p>
+                    `;
+                    qrResult.classList.add('show');
+                }
+            } catch (error) {
+                loading.classList.remove('show');
+                submitBtn.disabled = false;
+                qrResult.innerHTML = `
+                    <p class="error-message">❌ Network error. Please check your connection and try again.</p>
+                `;
+                qrResult.classList.add('show');
+            }
+        });
+
+        function downloadQR(url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'animal-qr-code.png';
+            link.click();
+        }
+
+        function printQR() {
+            window.print();
+        }
+
+        function resetForm() {
+            qrResult.classList.remove('show');
+            form.reset();
+            document.getElementById('fileName').textContent = '';
+        }
+    </script>
+</body>
+</html>

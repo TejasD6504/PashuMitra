@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Details | QR Scanned</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 149, 0, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(76, 175, 80, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header Banner */
+        .header-banner {
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.15), rgba(76, 175, 80, 0.15));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            border-radius: 20px;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .scan-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header-banner h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #ff9500, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header-banner p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Photo Section */
+        .photo-section {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(76, 175, 80, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .photo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-photo {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .no-photo-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .no-photo p {
+            color: #999;
+            font-size: 18px;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-healthy { color: #4caf50; border-color: rgba(76, 175, 80, 0.5); }
+        .status-injured { color: #ff5a5a; border-color: rgba(255, 90, 90, 0.5); }
+        .status-recovering { color: #ff9500; border-color: rgba(255, 149, 0, 0.5); }
+        .status-vaccinated { color: #66a6ff; border-color: rgba(102, 166, 255, 0.5); }
+
+        /* Info Section */
+        .info-section {
+            padding: 40px;
+        }
+
+        .animal-name {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ff9500, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 149, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .info-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff9500;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .info-label-icon {
+            font-size: 24px;
+        }
+
+        .info-value {
+            color: #ddd;
+            font-size: 16px;
+            line-height: 1.6;
+            padding-left: 34px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 140px;
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            color: #ff9500;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 149, 0, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 149, 0, 0.2);
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, #ff9500, #ff7300);
+            border: none;
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(255, 149, 0, 0.3);
+        }
+
+        .action-btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(255, 149, 0, 0.4);
+        }
+
+        /* QR Info Box */
+        .qr-info-box {
+            background: linear-gradient(135deg, rgba(102, 166, 255, 0.05), rgba(123, 224, 255, 0.05));
+            border: 1px solid rgba(102, 166, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qr-info-icon {
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .qr-info-text {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .qr-info-text strong {
+            color: #66a6ff;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #ff9500;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .photo-section {
+                height: 250px;
+            }
+
+            .info-section {
+                padding: 25px;
+            }
+
+            .animal-name {
+                font-size: 2em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        <div class="scan-icon">📱</div>
+        <h1>QR Code Scanned Successfully</h1>
+        <p>Displaying animal information</p>
+    </div>
+
+    <div class="container">
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <!-- Photo Section -->
+            <div class="photo-section">
+                <% if (animal.animal_photo) { %>
+                    <img src="/uploads/<%= animal.animal_photo %>" alt="<%= animal.animal_name %>">
+                    <div class="status-badge status-<%= animal.animal_condition.toLowerCase() %>">
+                        <span>
+                            <% if (animal.animal_condition === 'Healthy') { %>✅<% } %>
+                            <% if (animal.animal_condition === 'Injured') { %>🩹<% } %>
+                            <% if (animal.animal_condition === 'Recovering') { %>💚<% } %>
+                            <% if (animal.animal_condition === 'Vaccinated') { %>💉<% } %>
+                        </span>
+                        <%= animal.animal_condition %>
+                    </div>
+                <% } else { %>
+                    <div class="no-photo">
+                        <div class="no-photo-icon">🐾</div>
+                        <p>No photo available</p>
+                    </div>
+                    <div class="status-badge status-<%= animal.animal_condition.toLowerCase() %>">
+                        <span>
+                            <% if (animal.animal_condition === 'Healthy') { %>✅<% } %>
+                            <% if (animal.animal_condition === 'Injured') { %>🩹<% } %>
+                            <% if (animal.animal_condition === 'Recovering') { %>💚<% } %>
+                            <% if (animal.animal_condition === 'Vaccinated') { %>💉<% } %>
+                        </span>
+                        <%= animal.animal_condition %>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Info Section -->
+            <div class="info-section">
+                <div class="animal-name">
+                    <span>🐾</span>
+                    <%= animal.animal_name %>
+                </div>
+
+                <div class="info-grid">
+                    <!-- Health Condition -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="info-label-icon">💊</span>
+                            Health Condition
+                        </div>
+                        <div class="info-value">
+                            <%= animal.animal_condition %>
+                        </div>
+                    </div>
+
+                    <!-- Medical Record / Description -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <span class="info-label-icon">📋</span>
+                            Medical Record & Description
+                        </div>
+                        <div class="info-value">
+                            <%= animal.animal_description %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-primary" onclick="alert('Contacting rescue center...')">
+                        <span>📞</span> Contact Rescue Center
+                    </button>
+                    <button class="action-btn" onclick="alert('Reporting emergency...')">
+                        <span>🚨</span> Report Emergency
+                    </button>
+                    <button class="action-btn" onclick="window.print()">
+                        <span>🖨️</span> Print Details
+                    </button>
+                </div>
+
+                <!-- QR Info Box -->
+                <div class="qr-info-box">
+                    <div class="qr-info-icon">ℹ️</div>
+                    <div class="qr-info-text">
+                        <strong>Information:</strong> This data was retrieved via QR code scan. 
+                        If you found this animal in distress, please contact the rescue center immediately. 
+                        For non-emergency updates, you can use the contact button above.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🐾 <a href="#">Back to Home</a> • Animal Rescue Hub • Making a difference one animal at a time 🐾</p>
+        <p style="margin-top: 10px; font-size: 12px;">Scanned on <%= new Date().toLocaleDateString() %> at <%= new Date().toLocaleTimeString() %></p>
+    </div>
+
+    <script>
+        // Add entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileCard = document.querySelector('.profile-card');
+            profileCard.style.opacity = '0';
+            profileCard.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                profileCard.style.transition = 'all 0.6s ease';
+                profileCard.style.opacity = '1';
+                profileCard.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

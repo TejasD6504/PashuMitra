@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Experience | Animal Rescue Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      color: #fff;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(255, 149, 0, 0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(255, 90, 90, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 90, 90, 0.1));
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(255, 149, 0, 0.2);
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 149, 0, 0.1);
+      border: 1px solid rgba(255, 149, 0, 0.3);
+      color: #ff9500;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 149, 0, 0.2);
+      transform: translateX(-5px);
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      background: linear-gradient(135deg, #ff9500, #ff5a5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #ccc;
+      font-size: 1.1em;
+    }
+
+    /* Warning Banner */
+    .warning-banner {
+      background: linear-gradient(135deg, rgba(255, 90, 90, 0.2), rgba(255, 60, 60, 0.2));
+      border: 1px solid rgba(255, 90, 90, 0.4);
+      border-left: 4px solid #ff5a5a;
+      padding: 15px 20px;
+      margin: 20px auto;
+      max-width: 900px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .warning-icon {
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .warning-banner p {
+      color: #ffcccc;
+      font-size: 0.95em;
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Post Section */
+    .post-section {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    .post-section h2 {
+      color: #ff9500;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    .search-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: rgba(255, 149, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 149, 0, 0.15);
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 15px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .search-box input::placeholder {
+      color: #666;
+    }
+
+    .comment-input-area {
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 15px 20px;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: rgba(255, 149, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 149, 0, 0.15);
+    }
+
+    textarea::placeholder {
+      color: #666;
+    }
+
+    .char-count {
+      text-align: right;
+      color: #666;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .post-btn {
+      background: linear-gradient(135deg, #ff9500, #ff7300);
+      color: #fff;
+      padding: 14px 40px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 5px 20px rgba(255, 149, 0, 0.3);
+    }
+
+    .post-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 149, 0, 0.4);
+    }
+
+    .post-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Comments Section */
+    .comments-section {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+    }
+
+    .comments-section h3 {
+      color: #ff9500;
+      margin-bottom: 25px;
+      font-size: 1.6em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .comment-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #ff9500;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .comment-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: #ff5a5a;
+      transform: translateX(5px);
+    }
+
+    .comment-text {
+      color: #ddd;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .comment-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .comment-time {
+      color: #999;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .reaction-btns {
+      display: flex;
+      gap: 15px;
+    }
+
+    .reaction-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #aaa;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .reaction-btn:hover {
+      background: rgba(255, 149, 0, 0.2);
+      border-color: rgba(255, 149, 0, 0.3);
+      color: #ff9500;
+    }
+
+    .no-comments {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .no-comments-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 60px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .back-btn {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 20px;
+      }
+
+      .post-section, .comments-section {
+        padding: 20px;
+      }
+
+      .comment-meta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <a href="#" class="back-btn" onclick="alert('Returning to main page...'); return false;">← Back to Home</a>
+    <h1>🐾 Share Your Experience 🐾</h1>
+    <p>Share your thoughts, experiences, and home remedies with the community</p>
+  </div>
+
+  <!-- Warning Banner -->
+  <div class="warning-banner">
+    <div class="warning-icon">⚠️</div>
+    <p><strong>Community Guidelines:</strong> Please maintain respect. Hate speech, offensive language, or harmful content is not allowed and will be removed.</p>
+  </div>
+
+  <div class="container">
+    <!-- Post Section -->
+    <div class="post-section">
+      <h2>Share Your Story</h2>
+      
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search experiences, remedies, or keywords...">
+      </div>
+
+      <div class="comment-input-area">
+        <textarea id="commentInput" placeholder="Share your experience, pet care tips, or home remedies... 
+
+Examples:
+• Success story of rescuing a stray
+• Effective home remedy you've tried
+• Tips for first-time pet owners
+• Heartwarming pet moments"></textarea>
+        <div class="char-count" id="charCount">0 / 500</div>
+      </div>
+
+      <button class="post-btn" onclick="addComment()">
+        <span>✉️</span> Post Experience
+      </button>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+      <h3><span>💬</span> Community Posts</h3>
+      <div id="commentSection">
+        <div class="no-comments">
+          <div class="no-comments-icon">📝</div>
+          <p>No posts yet. Be the first to share your experience!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>🐾 Together we make a difference • Animal Rescue Hub 🐾</p>
+  </div>
+
+  <script>
+    const commentSection = document.getElementById("commentSection");
+    const searchInput = document.getElementById("searchInput");
+    const commentInput = document.getElementById("commentInput");
+    const charCount = document.getElementById("charCount");
+
+    let comments = [];
+
+    // Character counter
+    commentInput.addEventListener("input", function() {
+      const length = this.value.length;
+      charCount.textContent = length + " / 500";
+      if (length > 500) {
+        charCount.style.color = "#ff5a5a";
+      } else {
+        charCount.style.color = "#666";
+      }
+    });
+
+    function addComment() {
+      const text = commentInput.value.trim();
+      
+      if (text === "") {
+        alert("Please enter something to post!");
+        return;
+      }
+
+      if (text.length > 500) {
+        alert("Your post is too long. Please keep it under 500 characters.");
+        return;
+      }
+
+      // Check for inappropriate content
+      const inappropriateWords = /hate|kill|stupid|useless|abuse|idiot|dumb|shit|fuck|damn/i;
+      if (inappropriateWords.test(text)) {
+        alert("⚠️ Your comment contains inappropriate words and cannot be posted. Please maintain respectful language.");
+        return;
+      }
+
+      // Create comment object
+      const comment = {
+        text: text,
+        time: new Date(),
+        likes: 0,
+        id: Date.now()
+      };
+
+      comments.unshift(comment);
+      renderComments(comments);
+      
+      commentInput.value = "";
+      charCount.textContent = "0 / 500";
+      
+      // Success feedback
+      showNotification("✅ Your experience has been posted successfully!");
+    }
+
+    function renderComments(commentsToRender) {
+      if (commentsToRender.length === 0) {
+        commentSection.innerHTML = `
+          <div class="no-comments">
+            <div class="no-comments-icon">📝</div>
+            <p>No posts yet. Be the first to share your experience!</p>
+          </div>
+        `;
+        return;
+      }
+
+      commentSection.innerHTML = commentsToRender.map(comment => `
+        <div class="comment-card">
+          <div class="comment-text">${escapeHtml(comment.text)}</div>
+          <div class="comment-meta">
+            <div class="comment-time">
+              <span>🕒</span> ${getTimeAgo(comment.time)}
+            </div>
+            <div class="reaction-btns">
+              <button class="reaction-btn" onclick="likeComment(${comment.id})">
+                👍 <span id="likes-${comment.id}">${comment.likes}</span>
+              </button>
+              <button class="reaction-btn">
+                ❤️ Helpful
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function likeComment(id) {
+      const comment = comments.find(c => c.id === id);
+      if (comment) {
+        comment.likes++;
+        document.getElementById(`likes-${id}`).textContent = comment.likes;
+      }
+    }
+
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+      
+      if (seconds < 60) return "Just now";
+      if (seconds < 3600) return Math.floor(seconds / 60) + " minutes ago";
+      if (seconds < 86400) return Math.floor(seconds / 3600) + " hours ago";
+      return Math.floor(seconds / 86400) + " days ago";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showNotification(message) {
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+      `;
+      notif.textContent = message;
+      document.body.appendChild(notif);
+      
+      setTimeout(() => {
+        notif.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notif.remove(), 300);
+      }, 3000);
+    }
+
+    // Filter comments
+    searchInput.addEventListener("keyup", function() {
+      const filter = this.value.toLowerCase();
+      const filtered = comments.filter(comment => 
+        comment.text.toLowerCase().includes(filter)
+      );
+      renderComments(filtered);
+    });
+
+    // Initial render
+    renderComments(comments);
+  </script>
+</body>
+</html>

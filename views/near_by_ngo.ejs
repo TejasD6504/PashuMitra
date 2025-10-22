@@ -1,0 +1,261 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearby NGOs</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fffaf0;
+    }
+
+    header {
+      background-color: #ffa94d;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    #map {
+      width: 100%;
+      height: 85vh;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .info {
+      text-align: center;
+      margin: 10px;
+      color: #555;
+      font-size: 1rem;
+    }
+
+    .marker {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
+      background-size: cover;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .user-marker {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/149/149060.png');
+      background-size: cover;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🐾 Nearby NGOs 🐾</header>
+  <div class="info">Fetching your location and nearby animal NGOs within 6 km...</div>
+  <div id="map"></div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+  <script>
+   mapboxgl.accessToken = 'pk.eyJ1IjoicHByYXNhZCIsImEiOiJjbHZ0eHh0aDUwaHBqMmltam11a2R0bnA2In0.VLGHXl9M36iKAZUNVx7AXg';
+
+
+    // Sample NGO coordinates (replace with database values later)
+    const ngos = [
+      { name: "Animal Rescue Foundation", lat: 19.9928, lon: 73.7834 },
+      { name: "Paw Protect NGO", lat: 19.9970, lon: 73.7890 },
+      { name: "Helping Tails Trust", lat: 19.9840, lon: 73.8020 },
+      { name: "Safe Haven for Animals", lat: 19.9785, lon: 73.7700 },
+    ];
+
+    // Function to calculate distance (in km)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    // Get user's live location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+        enableHighAccuracy: true
+      });
+    } else {
+      alert("Geolocation not supported by your browser.");
+    }
+
+    function successLocation(position) {
+      const userLat = position.coords.latitude;
+      const userLon = position.coords.longitude;
+
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [userLon, userLat],
+        zoom: 13
+      });
+
+      // Add user marker
+      const userMarker = document.createElement('div');
+      userMarker.className = 'user-marker';
+      new mapboxgl.Marker(userMarker)
+        .setLngLat([userLon, userLat])
+        .setPopup(new mapboxgl.Popup().setText("You are here 🧍"))
+        .addTo(map);
+
+      // Show nearby NGOs
+      ngos.forEach(ngo => {
+        const distance = calculateDistance(userLat, userLon, ngo.lat, ngo.lon);
+        if (distance <= 6) { // within 6 km
+          const marker = document.createElement('div');
+          marker.className = 'marker';
+          new mapboxgl.Marker(marker)
+            .setLngLat([ngo.lon, ngo.lat])
+            .setPopup(new mapboxgl.Popup().setHTML(`<b>${ngo.name}</b><br>📍 ${distance.toFixed(2)} km away`))
+            .addTo(map);
+        }
+      });
+    }
+
+    function errorLocation() {
+      alert("Unable to access your location. Please enable GPS or location services.");
+    }
+  </script>
+
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nearby NGOs</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fffaf0;
+    }
+
+    header {
+      background-color: #ffa94d;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    #map {
+      width: 100%;
+      height: 85vh;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .info {
+      text-align: center;
+      margin: 10px;
+      color: #555;
+      font-size: 1rem;
+    }
+
+    .marker {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
+      background-size: cover;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .user-marker {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/149/149060.png');
+      background-size: cover;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🐾 Nearby NGOs 🐾</header>
+  <div class="info">Showing all nearby animal NGOs on the map...</div>
+  <div id="map"></div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+  <script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoicHByYXNhZCIsImEiOiJjbHZ0eHh0aDUwaHBqMmltam11a2R0bnA2In0.VLGHXl9M36iKAZUNVx7AXg';
+
+    // Sample NGO coordinates (replace later with Firebase or MySQL data)
+    const ngos = [
+      { name: "Animal Rescue Foundation", lat: 19.9928, lon: 73.7834 },
+      { name: "Paw Protect NGO", lat: 19.9970, lon: 73.7890 },
+      { name: "Helping Tails Trust", lat: 19.9840, lon: 73.8020 },
+      { name: "Safe Haven for Animals", lat: 19.9785, lon: 73.7700 },
+    ];
+
+    // Get user's live location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+        enableHighAccuracy: true
+      });
+    } else {
+      alert("Geolocation not supported by your browser.");
+    }
+
+    function successLocation(position) {
+      const userLat = position.coords.latitude;
+      const userLon = position.coords.longitude;
+
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [userLon, userLat],
+        zoom: 13
+      });
+
+      // Add user marker
+      const userMarker = document.createElement('div');
+      userMarker.className = 'user-marker';
+      new mapboxgl.Marker(userMarker)
+        .setLngLat([userLon, userLat])
+        .setPopup(new mapboxgl.Popup().setText("You are here 🧍"))
+        .addTo(map);
+
+      // Show all NGOs (no distance filter)
+      ngos.forEach(ngo => {
+        const marker = document.createElement('div');
+        marker.className = 'marker';
+        new mapboxgl.Marker(marker)
+          .setLngLat([ngo.lon, ngo.lat])
+          .setPopup(new mapboxgl.Popup().setHTML(`<b>${ngo.name}</b>`))
+          .addTo(map);
+      });
+    }
+
+    function errorLocation() {
+      alert("Unable to access your location. Please enable GPS or location services.");
+    }
+  </script>
+
+</body>
+</html>

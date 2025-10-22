@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Shop — Animal Rescue Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 149, 0, 0.05) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(255, 50, 50, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ff9500, #ff3b3b);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 8px 25px rgba(255, 75, 75, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff9500, #ff5a5a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-text p {
+      font-size: 13px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .back-btn {
+      background: rgba(255, 149, 0, 0.1);
+      border: 1px solid rgba(255, 149, 0, 0.3);
+      color: #ff9500;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 149, 0, 0.2);
+      transform: translateX(-5px);
+    }
+
+    /* Search and Filter Bar */
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      padding: 0 20px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: rgba(255, 149, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 149, 0, 0.1);
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .search-box input::placeholder {
+      color: #666;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: linear-gradient(135deg, #ff9500, #ff7300);
+      border-color: transparent;
+      box-shadow: 0 5px 15px rgba(255, 149, 0, 0.3);
+    }
+
+    /* Pet Grid */
+    .pet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    .pet-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pet-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff9500, #ff5a5a);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .pet-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 149, 0, 0.3);
+    }
+
+    .pet-card:hover::before {
+      opacity: 1;
+    }
+
+    .pet-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, rgba(255, 149, 0, 0.2), rgba(255, 90, 90, 0.2));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(255, 149, 0, 0.15);
+    }
+
+    .pet-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .pet-category {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 15px;
+    }
+
+    .pet-details {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      min-height: 60px;
+    }
+
+    .pet-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      background: rgba(255, 149, 0, 0.15);
+      color: #ff9500;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 149, 0, 0.3);
+    }
+
+    .pet-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ff9500;
+    }
+
+    .adopt-btn {
+      background: linear-gradient(135deg, #ff5a5a, #ff7a7a);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 90, 90, 0.3);
+    }
+
+    .adopt-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 90, 90, 0.4);
+    }
+
+    .adopt-btn:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: #666;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 60px;
+      padding: 30px 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer p {
+      color: #999;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .footer strong {
+      color: #ff9500;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .pet-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-text h1 {
+        font-size: 20px;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo">🐾</div>
+        <div class="brand-text">
+          <h1>Pet Shop</h1>
+          <p>Find your perfect companion</p>
+        </div>
+      </div>
+      <a href="#" class="back-btn" onclick="alert('Returning to main page...'); return false;">← Back to Home</a>
+    </header>
+
+    <!-- Search and Filters -->
+    <div class="controls">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Search for pets..." id="searchInput" onkeyup="filterPets()">
+      </div>
+      <button class="filter-btn active" onclick="filterCategory('all')">All Pets</button>
+      <button class="filter-btn" onclick="filterCategory('domestic')">Domestic</button>
+      <button class="filter-btn" onclick="filterCategory('farm')">Farm</button>
+      <button class="filter-btn" onclick="filterCategory('exotic')">Exotic</button>
+    </div>
+
+    <!-- Pet Grid -->
+    <div class="pet-grid" id="petGrid">
+      <!-- Dog -->
+      <div class="pet-card" data-category="domestic" data-name="Dog">
+        <div class="pet-icon">🐶</div>
+        <div class="pet-name">Dog</div>
+        <div class="pet-category">Loyal Companion • Domestic</div>
+        <div class="pet-details">Size: Small to Large<br>Temperament: Friendly, Loyal<br>Lifespan: 10-15 years</div>
+        <div class="pet-tags">
+          <span class="tag">Good with kids</span>
+          <span class="tag">Active</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹1,200</div>
+          <button class="adopt-btn" onclick="adoptPet('Dog')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Cat -->
+      <div class="pet-card" data-category="domestic" data-name="Cat">
+        <div class="pet-icon">🐱</div>
+        <div class="pet-name">Cat</div>
+        <div class="pet-category">Independent • Low-maintenance</div>
+        <div class="pet-details">Size: Small<br>Temperament: Curious, Independent<br>Lifespan: 12-18 years</div>
+        <div class="pet-tags">
+          <span class="tag">Indoor friendly</span>
+          <span class="tag">Low care</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹800</div>
+          <button class="adopt-btn" onclick="adoptPet('Cat')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Rabbit -->
+      <div class="pet-card" data-category="domestic" data-name="Rabbit">
+        <div class="pet-icon">🐇</div>
+        <div class="pet-name">Rabbit</div>
+        <div class="pet-category">Gentle • Small Mammal</div>
+        <div class="pet-details">Size: Small<br>Temperament: Calm, Gentle<br>Lifespan: 8-12 years</div>
+        <div class="pet-tags">
+          <span class="tag">Needs space</span>
+          <span class="tag">Quiet</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹600</div>
+          <button class="adopt-btn" onclick="adoptPet('Rabbit')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Bird -->
+      <div class="pet-card" data-category="domestic" data-name="Small Bird">
+        <div class="pet-icon">🐦</div>
+        <div class="pet-name">Small Bird</div>
+        <div class="pet-category">Parakeet / Finch • Chirpy</div>
+        <div class="pet-details">Size: Very Small<br>Temperament: Social, Active<br>Lifespan: 3-10 years</div>
+        <div class="pet-tags">
+          <span class="tag">Cage required</span>
+          <span class="tag">Social</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹250</div>
+          <button class="adopt-btn" onclick="adoptPet('Small Bird')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Fish -->
+      <div class="pet-card" data-category="domestic" data-name="Fish">
+        <div class="pet-icon">🐠</div>
+        <div class="pet-name">Fish</div>
+        <div class="pet-category">Aquatic Pet • Tranquil</div>
+        <div class="pet-details">Needs aquarium<br>Temperament: Peaceful<br>Lifespan: 1-10+ years</div>
+        <div class="pet-tags">
+          <span class="tag">Low interaction</span>
+          <span class="tag">Relaxing</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹150</div>
+          <button class="adopt-btn" onclick="adoptPet('Fish')">Buy Now</button>
+        </div>
+      </div>
+
+      <!-- Hamster -->
+      <div class="pet-card" data-category="domestic" data-name="Hamster">
+        <div class="pet-icon">🐹</div>
+        <div class="pet-name">Hamster</div>
+        <div class="pet-category">Tiny • Nocturnal</div>
+        <div class="pet-details">Size: Very Small<br>Temperament: Active at night<br>Lifespan: 2-3 years</div>
+        <div class="pet-tags">
+          <span class="tag">Beginner-friendly</span>
+          <span class="tag">Cute</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹200</div>
+          <button class="adopt-btn" onclick="adoptPet('Hamster')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Guinea Pig -->
+      <div class="pet-card" data-category="domestic" data-name="Guinea Pig">
+        <div class="pet-icon">🐹</div>
+        <div class="pet-name">Guinea Pig</div>
+        <div class="pet-category">Friendly • Social</div>
+        <div class="pet-details">Great for families<br>Temperament: Gentle<br>Lifespan: 4-8 years</div>
+        <div class="pet-tags">
+          <span class="tag">Group housing</span>
+          <span class="tag">Friendly</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹350</div>
+          <button class="adopt-btn" onclick="adoptPet('Guinea Pig')">Adopt Now</button>
+        </div>
+      </div>
+
+      <!-- Parrot -->
+      <div class="pet-card" data-category="exotic" data-name="Parrot">
+        <div class="pet-icon">🦜</div>
+        <div class="pet-name">Parrot</div>
+        <div class="pet-category">Talkative • Intelligent</div>
+        <div class="pet-details">High care needs<br>Temperament: Smart, Social<br>Lifespan: 20+ years</div>
+        <div class="pet-tags">
+          <span class="tag">Enrichment needed</span>
+          <span class="tag">Exotic</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">Enquire</div>
+          <button class="adopt-btn" onclick="adoptPet('Parrot')">Contact</button>
+        </div>
+      </div>
+
+      <!-- Chicken -->
+      <div class="pet-card" data-category="farm" data-name="Chicken">
+        <div class="pet-icon">🐔</div>
+        <div class="pet-name">Chicken</div>
+        <div class="pet-category">Backyard Farm Bird</div>
+        <div class="pet-details">Eggs & compost<br>Temperament: Calm<br>Lifespan: 5-10 years</div>
+        <div class="pet-tags">
+          <span class="tag">Outdoor</span>
+          <span class="tag">Farm</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹300</div>
+          <button class="adopt-btn" onclick="adoptPet('Chicken')">Buy Now</button>
+        </div>
+      </div>
+
+      <!-- Goat -->
+      <div class="pet-card" data-category="farm" data-name="Goat">
+        <div class="pet-icon">🐐</div>
+        <div class="pet-name">Goat</div>
+        <div class="pet-category">Small Ruminant • Farm</div>
+        <div class="pet-details">Milk production<br>Temperament: Friendly<br>Lifespan: 8-12 years</div>
+        <div class="pet-tags">
+          <span class="tag">Outdoor friendly</span>
+          <span class="tag">Farm</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹1,200</div>
+          <button class="adopt-btn" onclick="adoptPet('Goat')">Buy Now</button>
+        </div>
+      </div>
+
+      <!-- Turtle -->
+      <div class="pet-card" data-category="exotic" data-name="Turtle">
+        <div class="pet-icon">🐢</div>
+        <div class="pet-name">Turtle</div>
+        <div class="pet-category">Slow • Long-lived</div>
+        <div class="pet-details">Special care required<br>Temperament: Calm<br>Lifespan: 20-50+ years</div>
+        <div class="pet-tags">
+          <span class="tag">Tank needed</span>
+          <span class="tag">Long-term</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">Enquire</div>
+          <button class="adopt-btn" onclick="adoptPet('Turtle')">Contact</button>
+        </div>
+      </div>
+
+      <!-- Lizard -->
+      <div class="pet-card" data-category="exotic" data-name="Lizard">
+        <div class="pet-icon">🦎</div>
+        <div class="pet-name">Lizard</div>
+        <div class="pet-category">Reptile • Terrarium</div>
+        <div class="pet-details">Heat & UV light needed<br>Temperament: Varies<br>Lifespan: Varies by species</div>
+        <div class="pet-tags">
+          <span class="tag">Terrarium</span>
+          <span class="tag">Exotic</span>
+        </div>
+        <div class="pet-footer">
+          <div class="price">₹1,000+</div>
+          <button class="adopt-btn" onclick="adoptPet('Lizard')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p><strong>Tip:</strong> All adoption prices include initial health checkup and vaccination</p>
+      <p>Contact us: <strong>support@animalrescuehub.com</strong> • Phone: <strong>1-800-RESCUE</strong></p>
+      <p style="margin-top: 15px; color: #666;">🐾 Saving lives, one paw at a time 🐾</p>
+    </footer>
+  </div>
+
+  <script>
+    let currentCategory = 'all';
+
+    function filterCategory(category) {
+      currentCategory = category;
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const cards = document.querySelectorAll('.pet-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function filterPets() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.pet-card');
+      
+      cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const categoryMatch = currentCategory === 'all' || card.dataset.category === currentCategory;
+        const searchMatch = name.includes(searchTerm);
+        
+        if (categoryMatch && searchMatch) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function adoptPet(petName) {
+      alert(`Thank you for your interest in adopting ${petName}! Our team will contact you shortly.`);
+    }
+  </script>
+</body>
+</html>
