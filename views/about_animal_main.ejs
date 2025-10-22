@@ -332,7 +332,7 @@
             <!-- Photo Section -->
             <div class="photo-section">
                 <% if (animal.animal_photo) { %>
-                    <img src="/uploads/<%= animal.animal_photo %>" alt="<%= animal.animal_name %>">
+                    <img src="<%= animal.animal_photo %>" alt="<%= animal.animal_name %>">
                     <div class="status-badge status-<%= animal.animal_condition.toLowerCase() %>">
                         <span>
                             <% if (animal.animal_condition === 'Healthy') { %>✅<% } %>

@@ -558,12 +558,22 @@
             }
         });
 
-        function downloadQR(url) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'animal-qr-code.png';
-            link.click();
-        }
+      async function downloadQR(url) {
+    try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'animal-qr-code.png';
+        link.click();
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+        alert('Failed to download QR code');
+        console.error(err);
+    }
+}
+
 
         function printQR() {
             window.print();
