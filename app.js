@@ -6,7 +6,7 @@ const mysql = require('mysql2');
 const QRCode = require('qrcode');
 require('dotenv').config();
 
-const port = 3000;
+// const port = 3000;
 const app = express();
 
 // Ensure folders exist
@@ -123,4 +123,4 @@ app.get("/ar", async (req, res) => {
 
 
 // Start server
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+// app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
