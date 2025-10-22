@@ -77,7 +77,9 @@ app.post('/animal_info', upload.single('photo'), async (req, res) => {
         console.log('Inserted animal with ID:', animalId);
 
         // QR code contains only the ID URL
-        const qrText = `http://localhost:3000/animal/${animalId}`; // later replace localhost with your IP or domain
+        // Replace localhost with your deployed Vercel URL
+const qrText = `${process.env.BASE_URL || 'http://localhost:3000'}/animal/${animalId}`;
+// later replace localhost with your IP or domain
         const qrFileName = `animal-${animalId}.png`;
         const qrPath = path.join(__dirname, 'qrcodes', qrFileName);
         const qrUrl = `/qrcodes/${qrFileName}`;
@@ -122,5 +124,11 @@ app.get("/ar", async (req, res) => {
 });
 
 
-// Start server
-// app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+const port = process.env.PORT || 3000;
+
+// Only start server if running locally
+if (process.env.VERCEL === undefined) {
+  app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+}
+
+module.exports = app;
