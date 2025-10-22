@@ -199,12 +199,16 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // MySQL connection
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASS,
-  database: process.env.DATABASE_NAME
+  database: process.env.DATABASE_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+
 
 // Helper function to upload buffer to Cloudinary
 const uploadToCloudinary = (buffer, folder, publicId = null) => {
@@ -244,28 +248,23 @@ app.post('/animal_info', upload.single('photo'), async (req, res) => {
   try {
     const { animalname, condition, description } = req.body;
 
-    // 1️⃣ Upload photo to Cloudinary
     let photoUrl = null;
     if (req.file) {
       const photoResult = await uploadToCloudinary(req.file.buffer, 'animal_photos');
       photoUrl = photoResult.secure_url;
     }
 
-    // 2️⃣ Insert animal data into DB
     const sql = 'INSERT INTO animal_info (animal_name, animal_condition, animal_description, animal_photo) VALUES (?, ?, ?, ?)';
     db.query(sql, [animalname, condition, description, photoUrl], async (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
 
       const animalId = result.insertId;
 
-      // 3️⃣ Generate QR code pointing to animal URL
       const qrText = `${process.env.BASE_URL || 'http://localhost:3000'}/animal/${animalId}`;
       const qrBuffer = await QRCode.toBuffer(qrText);
 
-      // 4️⃣ Upload QR code to Cloudinary
       const qrResult = await uploadToCloudinary(qrBuffer, 'animal_qrcodes', `animal-${animalId}`);
 
-      // 5️⃣ Update DB with QR URL
       const updateSql = 'UPDATE animal_info SET animal_qr_code_url = ? WHERE animal_id = ?';
       db.query(updateSql, [qrResult.secure_url, animalId], (err2) => {
         if (err2) return res.status(500).json({ error: err2.message });
@@ -278,7 +277,6 @@ app.post('/animal_info', upload.single('photo'), async (req, res) => {
   }
 });
 
-// AR view of animals
 app.get('/ar', (req, res) => {
   const sql = 'SELECT * FROM animal_info';
   db.query(sql, (err, results) => {
