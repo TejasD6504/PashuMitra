@@ -1,96 +1,149 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animal Rescue Site</title>
+    <title>PashuMitra - Animal Rescue Site</title>
+
     <style>
-        * {
+        *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
+        body{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0a0a0a;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .header {
-            position: absolute;
-            top: 30px;
-            text-align: center;
             width: 100%;
-            color: #fff;
-            z-index: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header h1 {
-            font-size: 3em;
+        #head{
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(255, 149, 0, 0.3);
+            border-bottom: 3px solid #ff9500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        #logo{
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #ff9500;
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.5);
+            animation: logoGlow 2s infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 149, 0, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(255, 149, 0, 0.8); }
+        }
+
+        #head h2{
+            font-size: 42px;
             font-weight: 700;
-            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(45deg, #ff9500, #ffb347, #ff9500);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
             letter-spacing: 2px;
         }
 
-        .container {
-            position: relative;
-            width: 900px;
-            height: 700px;
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .tagline{
+            color: #cccccc;
+            font-size: 16px;
+            font-weight: 400;
+            margin-top: 8px;
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+        }
+
+        #container{
+            flex: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 40px;
-            padding: 20px;
+            gap: 30px;
+            position: relative;
+            justify-items: center;
+            align-items: center;
         }
 
-        .box {
+        .box{
+            width: 95%;
+            height: 200px;
             background: linear-gradient(145deg, #ff9500, #ff7300);
             border-radius: 30px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 2em;
+            font-size: 30px;
             font-weight: 600;
             color: white;
             cursor: pointer;
             transition: all 0.4s ease;
             box-shadow: 0 10px 30px rgba(255, 149, 0, 0.4);
-            text-align: center;
-            padding: 30px;
             position: relative;
-            z-index: 1;
+            overflow: hidden;
         }
 
-        .box:hover {
+        .box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .box:hover::before {
+            left: 100%;
+        }
+
+        .box:hover{
             transform: scale(1.05);
             box-shadow: 0 15px 40px rgba(255, 149, 0, 0.6);
         }
 
-        .box-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-
-        .emergency-btn {
+        .circle{
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 350px;
-            height: 350px;
+            width: 400px;
+            height: 400px;
             background: linear-gradient(145deg, #ff2020, #cc0000);
             border-radius: 50%;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 2.2em;
+            flex-direction: column;
+            font-size: 24px;
             font-weight: 700;
             color: white;
             cursor: pointer;
@@ -101,35 +154,16 @@
             animation: pulse 2s infinite;
         }
 
-          .outer-emergency-btn {
+        .outer-circle{
             position: absolute;
             top: 50%;
             left: 50%;
-             transform: translate(-50%, -50%);
-            width: 450px;
-            height: 450px;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
             background: black;
             border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             z-index: 9;
-
-        }
-
-            
-        .tagline {
-            position: absolute;
-            /* bottom: 60px; */
-            text-align: center;
-            width: 100%;
-            color: #fff;
-            font-size: 1.5em;
-            font-weight: 500;
-            z-index: 1;
-            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
-            opacity: 0.9;
         }
 
         @keyframes pulse {
@@ -141,14 +175,19 @@
             }
         }
 
-        .emergency-btn:hover {
+        .circle:hover{
             transform: translate(-50%, -50%) scale(1.1);
             box-shadow: 0 0 70px rgba(255, 32, 32, 1), 0 0 120px rgba(255, 32, 32, 0.7);
             animation: none;
         }
 
-        .emergency-icon {
-            font-size: 1.8em;
+        a{
+            text-decoration: none;
+            color: white;
+        }
+
+        .emergency-icon{
+            font-size: 2.5em;
             margin-bottom: 15px;
             animation: flash 1s infinite;
         }
@@ -156,68 +195,6 @@
         @keyframes flash {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
-        }
-
-        @media (max-width: 1024px) {
-            .container {
-                width: 700px;
-                height: 550px;
-                gap: 30px;
-            }
-
-            .box {
-                font-size: 1.5em;
-                border-radius: 25px;
-            }
-
-            .box-icon {
-                font-size: 2.5em;
-            }
-
-            .emergency-btn {
-                width: 280px;
-                height: 280px;
-                font-size: 1.8em;
-            }
-
-            .header h1 {
-                font-size: 2.5em;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 90vw;
-                height: 90vw;
-                max-width: 500px;
-                max-height: 500px;
-                gap: 20px;
-            }
-
-            .box {
-                font-size: 1.2em;
-                border-radius: 20px;
-                padding: 20px;
-            }
-
-            .box-icon {
-                font-size: 2em;
-            }
-
-            .emergency-btn {
-                width: 200px;
-                height: 200px;
-                font-size: 1.3em;
-            }
-
-            .emergency-icon {
-                font-size: 1.5em;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-                top: 15px;
-            }
         }
 
         .modal {
@@ -279,66 +256,270 @@
             background: linear-gradient(145deg, #cc0000, #aa0000);
             transform: scale(1.05);
         }
+
+        footer{
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            color: white;
+            padding: 40px 20px 20px;
+            border-top: 3px solid #ff9500;
+            margin-top: 50px;
+        }
+
+        .footer-content{
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3{
+            color: #ff9500;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .footer-section p, .footer-section ul{
+            color: #cccccc;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .footer-section ul{
+            list-style: none;
+        }
+
+        .footer-section ul li{
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li:hover{
+            color: #ff9500;
+        }
+
+        .social-icons{
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icon{
+            width: 40px;
+            height: 40px;
+            background: #ff9500;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 20px;
+        }
+
+        .social-icon:hover{
+            background: #ff7300;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 149, 0, 0.5);
+        }
+
+        .footer-bottom{
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .stats-section{
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card{
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #ff9500;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover{
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 149, 0, 0.3);
+        }
+
+        .stat-number{
+            font-size: 36px;
+            font-weight: 700;
+            color: #ff9500;
+            margin-bottom: 10px;
+        }
+
+        .stat-label{
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            #head h2{
+                font-size: 28px;
+            }
+            
+            #logo{
+                width: 50px;
+                height: 50px;
+            }
+
+            #container{
+                padding: 0 20px;
+                gap: 20px;
+            }
+
+            .box{
+                font-size: 20px;
+                height: 150px;
+            }
+
+            .circle{
+                width: 250px;
+                height: 250px;
+                font-size: 18px;
+            }
+
+            .outer-circle{
+                width: 320px;
+                height: 320px;
+            }
+
+            .stats-section{
+                padding: 0 20px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🐾 Animal Rescue Hub 🐾</h1>
-    </div>
+    <header id="head">
+        <img src="/images/pashumitra-logo.png" id="logo" alt="PashuMitra Logo">
+        <div>
+            <h2>PashuMitra</h2>
+            <p class="tagline">🐾 Saving lives, one paw at a time 🐶</p>
+        </div>
+    </header>
 
-    <div class="container">
-        <div class="box">
-            <a href="/petshop"><div class="box-icon">🏪</div>
-            Pet Shop
-            </a>
-        </div>
-        
-        <div class="box" >
-          <a href="/about"><div class="box-icon">🏪</div>  <div class="box-icon">🦁</div>
-            About Animals
-             </a>
-        </div>
-        <div class="box">
-          <a href="/discussion_section"><div class="box-icon">🏪</div>  <div class="box-icon">💬</div>
-            Share Experience
-             </a>
-        </div>
-        <div class="box">
-           <a href="/nearby_NGOs"><div class="box-icon">🏪</div> <div class="box-icon">🏥</div>
-            Nearby NGO's
-             </a>
-        </div>
+    <div id="container">
+        <a href="/petshop" class="box">
+            <div>🏪 <strong>Adopt / Pet Shop</strong></div>
+        </a>
 
-        <div class="emergency-btn" onclick="showEmergency()">
+        <a href="/about" class="box">
+            <div>🐾 <strong>About Animals</strong></div>
+        </a>
+
+        <a href="/discussion_section" class="box">
+            <div>✍️ <strong>Share Experience</strong></div>
+        </a>
+
+        <a href="/nearby_NGOs" class="box">
+            <div>🏥 <strong>Nearby NGOs</strong></div>
+        </a>
+
+        <div class="circle emergency-btn" onclick="showEmergency()">
             <div class="emergency-icon">🚨</div>
-            Emergency<br>Request
+            <strong>Emergency Request</strong>
         </div>
-        <div class="outer-emergency-btn" >
-    
-        </div>
+
+        <div class="outer-circle"></div>
     </div>
-
-<p class="tagline">Saving lives, one paw at a time 🐶🐾</p>
-
 
     <div id="emergencyModal" class="modal">
         <div class="modal-content">
             <h2>🚨 Emergency Alert!</h2>
             <p>This will connect you to emergency animal rescue services immediately.</p>
+            <p id="userLocation"><strong>Fetching your location...</strong></p>
             <p><strong>Emergency Hotline: 1-800-RESCUE</strong></p>
             <p>Stay calm. Help is on the way!</p>
             <button class="close-btn" onclick="closeModal()">Close</button>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About PashuMitra</h3>
+                <p>Dedicated to rescuing, rehabilitating, and rehoming animals in need. We work tirelessly to create a world where every animal is treated with compassion and care.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li>🏠 Home</li>
+                    <li>🐾 Adopt a Pet</li>
+                    <li>💝 Donate</li>
+                    <li>👥 Volunteer</li>
+                    <li>📰 Success Stories</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>📧 Email: help@pashumitra.org</p>
+                <p>📞 Phone: 1-800-RESCUE</p>
+                <p>📍 Location: Nashik, Maharashtra</p>
+                <div class="social-icons">
+                    <div class="social-icon">📘</div>
+                    <div class="social-icon">📷</div>
+                    <div class="social-icon">🐦</div>
+                    <div class="social-icon">▶️</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 PashuMitra. All rights reserved. | Every animal deserves a loving home 💚</p>
+        </div>
+    </footer>
 
     <script>
-        function navigateTo(page) {
-            alert('Navigating to: ' + page.replace(/-/g, ' ').toUpperCase());
-        }
-
         function showEmergency() {
-            document.getElementById('emergencyModal').style.display = 'flex';
-        }
+    const modal = document.getElementById('emergencyModal');
+    const locationEl = document.getElementById('userLocation');
+
+    modal.style.display = 'flex';
+
+    if (navigator.geolocation) {
+        const options = {
+            enableHighAccuracy: true, // request GPS if available
+            maximumAge: 0,
+            timeout: 20000
+        };
+
+        // Watch position to continuously update location
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const lat = position.coords.latitude.toFixed(6);
+                const lon = position.coords.longitude.toFixed(6);
+                const accuracy = position.coords.accuracy.toFixed(2); // in meters
+                locationEl.innerHTML = `📍 Latitude: ${lat}, Longitude: ${lon} (Accuracy: ±${accuracy} m)`;
+            },
+            (error) => {
+                locationEl.innerHTML = "⚠️ Unable to fetch accurate location.";
+            },
+            options
+        );
+    } else {
+        locationEl.innerHTML = "⚠️ Geolocation is not supported by your browser.";
+    }
+}
+
 
         function closeModal() {
             document.getElementById('emergencyModal').style.display = 'none';
@@ -351,284 +532,5 @@
             }
         }
     </script>
-</body>
-</html> -->
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <style>
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            height: 100vh;
-            width: 100%;
-        }
-
-        #head{
-            color: white;
-            font-size: 50px;
-            text-align: center;
-
-        }
-
-        #container{
-            width: 100%;
-            height: 90vh;
-            margin: auto;
-            margin-top: 50px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 30px;
-            position: relative;
-            justify-items: center;  
-        }
-
-        .box{
-            width: 95%;
-            background: linear-gradient(145deg, #ff9500, #ff7300);
-            border-radius: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(255, 149, 0, 0.4);
-        }
-
-        .box:hover{
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 149, 0, 0.6);
-        }
-
-        .circle{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(145deg, #ff2020, #cc0000);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 40px rgba(255, 32, 32, 0.7), 0 0 80px rgba(255, 32, 32, 0.4);
-            text-align: center;
-            z-index: 10;
-            animation: pulse 2s infinite;
-        }
-
-        .outer-circle{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 500px;
-            height: 500px;
-            background: black;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9;
-
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 40px rgba(255, 32, 32, 0.7), 0 0 80px rgba(255, 32, 32, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 60px rgba(255, 32, 32, 0.9), 0 0 100px rgba(255, 32, 32, 0.6);
-            }
-        }
-
-        .circle:hover{
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 0 70px rgba(255, 32, 32, 1), 0 0 120px rgba(255, 32, 32, 0.7);
-            animation: none;
-        }
-
-        a{
-            text-decoration: none;
-            color: white;
-        }
-
-        .emergency-icon{
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            animation: flash 1s infinite;
-        }
-
-        @keyframes flash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-                .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            padding: 50px;
-            border-radius: 25px;
-            max-width: 550px;
-            width: 90%;
-            color: white;
-            text-align: center;
-            box-shadow: 0 0 60px rgba(255, 32, 32, 0.6);
-            border: 2px solid #ff2020;
-        }
-
-        .modal-content h2 {
-            color: #ff2020;
-            margin-bottom: 25px;
-            font-size: 2.5em;
-        }
-
-        .modal-content p {
-            margin-bottom: 20px;
-            line-height: 1.8;
-            font-size: 1.1em;
-        }
-
-        .modal-content strong {
-            color: #ff2020;
-            font-size: 1.3em;
-        }
-
-        .close-btn {
-            background: linear-gradient(145deg, #ff2020, #cc0000);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .close-btn:hover {
-            background: linear-gradient(145deg, #cc0000, #aa0000);
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-    <h2 id="head">PashuMitra - The animal rescue site</h2>
-
-<div id="container">
-    <!-- Box 1: Adopt / Pet Shop -->
-   
-   <a href="/petshop" class="box">
-    <div class="firbox">
-             🏪 <strong>Adopt / Pet Shop</strong>
-    </div>
-    </a>
-
-    <!-- Box 2: About Animals -->
-     <a href="/about" class="box">
-    <div class="secbox">
-            🐾 <strong>About Animals</strong>
-    </div>
-      </a>
-
-    <!-- Box 3: Share Experience -->
-     <a href="/discussion_section" class="box">
-    <div class="thdbox">
-            ✍️ <strong>Share Experience</strong>
-    </div>
-    </a>
-
-    <!-- Box 4: Nearby NGOs -->
-    <a href="/nearby_NGOs" class="box">
-    <div class="fourbox">
-            🏥 <strong>Nearby NGOs</strong>
-    </div>
-      </a>
-
-    <!-- Center Circle: Emergency Request -->
-    <div class="circle emergency-btn" onclick="showEmergency()">
-     <div class="emergency-icon">🚨</div>
-         <strong>Emergency Request</strong>
-    </div>
-
-    <!-- Outer Circle for animation -->
-    <div class="outer-circle emergency-btn"></div>      
-
-
- <div id="emergencyModal" class="modal">
-        <div class="modal-content">
-            <h2>🚨 Emergency Alert!</h2>
-            <p>This will connect you to emergency animal rescue services immediately.</p>
-            <p><strong>Emergency Hotline: 1-800-RESCUE</strong></p>
-            <p>Stay calm. Help is on the way!</p>
-            <button class="close-btn" onclick="closeModal()">Close</button>
-        </div>
-    </div>
-
-    </div>
-
- <script>
-        function navigateTo(page) {
-            alert('Navigating to: ' + page.replace(/-/g, ' ').toUpperCase());
-        }
-
-        function showEmergency() {
-            document.getElementById('emergencyModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('emergencyModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('emergencyModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
-    
 </body>
 </html>
